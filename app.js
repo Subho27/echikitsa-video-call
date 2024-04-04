@@ -15,6 +15,12 @@ const options = {};
 //     res.send('Hello from mediasoup app!')
 // })
 
+app.get("/", function (req, res) {
+  console.log(req.socket.remoteAddress);
+  console.log(req.ip);
+  res.send("your IP is: " + req.ip);
+});
+
 const httpsServer = https.createServer(options, app)
 httpsServer.listen(3000, () => {
   console.log('listening on port: ' + 3000)
