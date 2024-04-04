@@ -394,7 +394,7 @@ const createWebRtcTransport = async (router) => {
         const webRtcTransport_options = {
           listenIps: [
             {
-              ip: '127.0.0.1', // private/public ip
+              ip: '0.0.0.0', // private/public ip
               // announcedIp: '192.168.0.107', 
             }
           ],
