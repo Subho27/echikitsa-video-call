@@ -43,7 +43,7 @@ let consumers = []      // [ { socketId1, roomName1, consumer, }, ... ]
 const createWorker = async () => {
   worker = await mediasoup.createWorker({
     rtcMinPort: 8080,
-    rtcMaxPort: 8180,
+    rtcMaxPort: 8180
   })
   console.log(`worker pid ${worker.pid}`)
 
@@ -81,7 +81,7 @@ const mediaCodecs = [
 ]
 
 connections.on('connection', async socket => {
-    console.log(socket.id)
+    // console.log(socket.id)
     socket.emit('connection-success', {
       socketId: socket.id,
     })
@@ -101,7 +101,7 @@ connections.on('connection', async socket => {
           router1 = await worker.createRouter({ mediaCodecs, })
         }
         
-        console.log(`Router ID: ${router1.id}`, peers.length)
+        // console.log(`Router ID: ${router1.id}`, peers.length)
     
         rooms[roomName] = {
           router: router1,
@@ -187,7 +187,7 @@ connections.on('connection', async socket => {
 
     // see client's socket.emit('transport-connect', ...)
     socket.on('transport-connect', ({ dtlsParameters }) => {
-        console.log('DTLS PARAMS... ', { dtlsParameters })
+        // console.log('DTLS PARAMS... ', { dtlsParameters })
         
         getTransport(socket.id).connect({ dtlsParameters })
     })
@@ -208,7 +208,7 @@ connections.on('connection', async socket => {
     }
 
     const informConsumers = (roomName, socketId, id) => {
-        console.log(`just joined, id ${id} ${roomName}, ${socketId}`)
+        // console.log(`just joined, id ${id} ${roomName}, ${socketId}`)
         // A new producer just joined
         // let all consumers to consume this producer
         producers.forEach(producerData => {
@@ -235,10 +235,10 @@ connections.on('connection', async socket => {
 
         informConsumers(roomName, socket.id, producer.id)
 
-        console.log('Producer ID: ', producer.id, producer.kind)
+        // console.log('Producer ID: ', producer.id, producer.kind)
 
         producer.on('transportclose', () => {
-        console.log('transport for this producer closed ')
+        // console.log('transport for this producer closed ')
         producer.close()
         })
 
@@ -266,7 +266,7 @@ connections.on('connection', async socket => {
 
     // see client's socket.emit('transport-recv-connect', ...)
     socket.on('transport-recv-connect', async ({ dtlsParameters, serverConsumerTransportId }) => {
-        console.log(`DTLS PARAMS: ${dtlsParameters}`)
+        // console.log(`DTLS PARAMS: ${dtlsParameters}`)
         const consumerTransport = transports.find(transportData => (
         transportData.consumer && transportData.transport.id == serverConsumerTransportId
         )).transport
@@ -292,7 +292,7 @@ connections.on('connection', async socket => {
 
     socket.on('consume', async ({ rtpCapabilities, remoteProducerId, serverConsumerTransportId }, callback) => {
         try {
-          console.log('consume 295');
+          // console.log('consume 295');
           const { roomName } = peers[socket.id]
           const router = rooms[roomName].router
           let consumerTransport = transports.find(transportData => (
@@ -312,11 +312,11 @@ connections.on('connection', async socket => {
             })
     
             consumer.on('transportclose', () => {
-              console.log('transport close from consumer')
+              // console.log('transport close from consumer')
             })
     
             consumer.on('producerclose', () => {
-              console.log('producer of consumer closed')
+              // console.log('producer of consumer closed')
               socket.emit('producer-closed', { remoteProducerId })
     
               consumerTransport.close([])
@@ -351,7 +351,7 @@ connections.on('connection', async socket => {
     })
 
     socket.on('consumer-resume', async ({ serverConsumerId }) => {
-        console.log('consumer resume')
+        // console.log('consumer resume')
         const { consumer } = consumers.find(consumerData => consumerData.consumer.id === serverConsumerId)
         await consumer.resume()
     })
@@ -394,7 +394,7 @@ const createWebRtcTransport = async (router) => {
         const webRtcTransport_options = {
           listenIps: [
             {
-              ip: '0.0.0.0', // private/public ip
+              ip: '127.0.0.1', // private/public ip
               // announcedIp: '192.168.0.107', 
             }
           ],
@@ -405,7 +405,7 @@ const createWebRtcTransport = async (router) => {
   
         // https://mediasoup.org/documentation/v3/mediasoup/api/#router-createWebRtcTransport
         let transport = await router.createWebRtcTransport(webRtcTransport_options)
-        console.log(`transport id: ${transport.id}`)
+        // console.log(`transport id: ${transport.id}`)
   
         transport.on('dtlsstatechange', dtlsState => {
           if (dtlsState === 'closed') {
@@ -414,7 +414,7 @@ const createWebRtcTransport = async (router) => {
         })
   
         transport.on('close', () => {
-          console.log('transport closed')
+          // console.log('transport closed')
         })
   
         resolve(transport)
