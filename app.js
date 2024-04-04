@@ -395,7 +395,7 @@ const createWebRtcTransport = async (router) => {
           listenIps: [
             {
               ip: '0.0.0.0', // private/public ip
-              // announcedIp: '192.168.0.107', 
+              announcedIp: 'https://echikitsa.onrender.com', 
             }
           ],
           enableUdp: true,
